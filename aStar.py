@@ -95,7 +95,7 @@ def astar(size, difficulty):
             new_node.f = new_node.g + new_node.h    # calculating the f
 
             open_set.append(new_node)    # adding new node to open_set
-            o.append([new_node.position, new_node.g])   # adding new nodes position to o
+            o.append(new_node.position)   # adding new nodes position to o
 
     return False, maze, o   # if end wasn't found we return false, maze and o
 
