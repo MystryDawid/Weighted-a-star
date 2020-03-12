@@ -1,5 +1,5 @@
 # aStar
-While programing a star path finder algorithm i have learned python OOP
+While programing a star path finder algorithm i have learned python OOP and use numpy for better performance.
 
 
 This aStar assumes size and difficulty (from 0 to 100)
