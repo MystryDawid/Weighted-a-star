@@ -58,13 +58,12 @@ def astar(size, difficulty):
             path = []
             while current_node.parent:                  # from latest node to the node after start
                 path.append([(int(current_node.position[0]), int(current_node.position[1]))])
-                                                        # adding nod position to the path table
+                # adding nod position to the path table
                 current_node = current_node.parent      # changing node to previous one
             path.append([(int(current_node.position[0]), int(current_node.position[1]))])
-                                                        # adding the start node position
+            # adding the start node position
             return [path[::-1], maze, o]                # returning revers path,
-                                                        # maze and position of every node that was in open set
-
+            # maze and position of every node that was in open set
 
         for new_position in [(-1, -1), (-1, 1), (1, -1), (1, 1), (0, -1), (0, 1), (-1, 0), (1, 0)]:
 
