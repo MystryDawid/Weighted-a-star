@@ -1,5 +1,5 @@
 from random import random
-import math
+import numpy as np
 
 
 class Node:
@@ -17,8 +17,8 @@ class Node:
     def __hash__(self):                         # function for hashing objects
         return hash(self.position)
 
-    def __sub__(self, other):                   # function for subtractions objects
-        return (self.position - other.position, self.position[0] - other.position[0])
+    def __sub__(self, other):  # function for subtractions objects
+        return np.subtract(self.position, other.position)
 
 
 def astar(size, difficulty):
@@ -39,8 +39,8 @@ def astar(size, difficulty):
     o = []
 
     open_set.append(start_node)
-    o.append(start_node.position)
-    # adding start node to open set
+    o.append(o.append([int(start_node.position[0]), int(start_node.position[1])]))
+    # adding start node to open set and o
     while open_set:
 
         current_node = open_set[0]
@@ -57,15 +57,18 @@ def astar(size, difficulty):
         if current_node == end:                     # if path is founded
             path = []
             while current_node.parent:                  # from latest node to the node after start
-                path.append(current_node.position)      # adding nod position to the path table
+                path.append([(int(current_node.position[0]), int(current_node.position[1]))])
+                                                        # adding nod position to the path table
                 current_node = current_node.parent      # changing node to previous one
-            path.append(current_node.position)          # adding the start node position
+            path.append([(int(current_node.position[0]), int(current_node.position[1]))])
+                                                        # adding the start node position
             return [path[::-1], maze, o]                # returning revers path,
                                                         # maze and position of every node that was in open set
 
+
         for new_position in [(-1, -1), (-1, 1), (1, -1), (1, 1), (0, -1), (0, 1), (-1, 0), (1, 0)]:
 
-            position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+            position = np.add(current_node.position, new_position)
             # creating a new position close to current node position
 
             if position[0] > (len(maze) - 1) or\
@@ -83,22 +86,19 @@ def astar(size, difficulty):
             if new_node in open_set:    # checking if node is in open_set, if is we skip one loop
                 continue
 
-            new_node.g = current_node.g + math.sqrt(((new_node.position[0] - current_node.position[0]) ** 2)
-                                                    + ((new_node.position[1] - current_node.position[1]) ** 2))
+            new_node.g = current_node.g + int(np.linalg.norm(new_node.position - current_node.position))
             # calculating the g
 
-            new_node.h = math.sqrt(((new_node.position[0] - end.position[0]) ** 2) + (
-                    (new_node.position[1] - end.position[1]) ** 2))
-
+            new_node.h = np.linalg.norm(new_node.position - end.position)
             # calculating the h
 
             new_node.f = new_node.g + new_node.h    # calculating the f
 
             open_set.append(new_node)    # adding new node to open_set
-            o.append(new_node.position)   # adding new nodes position to o
+            o.append([(int(new_node.position[0]), int(new_node.position[1]))])
+            # adding new nodes position to o
 
     return False, maze, o   # if end wasn't found we return false, maze and o
-
 
 
 
