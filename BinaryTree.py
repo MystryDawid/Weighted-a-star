@@ -51,51 +51,24 @@ class TreeNode:
     def value_max_node(self, node=None):
         return self.max_value_node(node).value
 
-    def parent_node(self, node):
-        if self.value == node.value:
-            return None
-        tmp = self
-        while True:
-            if tmp is not None:
-                if tmp.value.h < node.value.h:
-                    if tmp.right.value == node.value:
-                        return tmp
-                    else:
-                        tmp = tmp.right
-                        continue
-                else:
-                    if tmp.left.value == node.value:
-                        return tmp
-                    else:
-                        tmp = tmp.left
-                        continue
-            else:
-                return tmp
-
     def search(self, node):
-
         if self.value is not None:
             tmp = self
             while True:
                 if tmp is not None:
                     if tmp.value is not None:
-
                         if tmp.value == node:
-                            #print("jest")
                             return tmp
-                        elif tmp.value.h >= node.h:
-                            tmp = tmp.left
-                            #print("left")
+                        elif tmp.value.h < node.h:
+                            tmp = tmp.right
                             continue
                         else:
-                            tmp = tmp.right
-                            #print("right")
+                            tmp = tmp.left
                             continue
                     else:
                         return None
                 else:
                     return None
-
         else:
             return None
 

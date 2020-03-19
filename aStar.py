@@ -6,6 +6,7 @@ from BinaryTree import TreeNode
 
 class Node:
     def __init__(self, parent=None, position=None):     # constructor of objects
+
         self.parent = parent
         self.position = position
 
@@ -41,12 +42,9 @@ def astar(size, difficulty, e):
     start_node = Node(None, (0, 0))
     end = Node(None, (grid - 1, grid - 1))
 
-    o = []
-    closed_set = TreeNode()
-
-    # adding start node to open set and o
-    open_set = TreeNode(start_node)
-    o.append(start_node.position)
+    o = [start_node.position]
+    open_set = TreeNode(start_node)     # adding start node to open set and o
+    closed_set = TreeNode()      # creating closed set
 
     while open_set.value:
 
@@ -107,4 +105,3 @@ def astar(size, difficulty, e):
 
     time = _time.time() - start_time    # stopping timer
     return False, maze, o, time  # if end wasn't found we return false, maze, o and time
-
