@@ -1,5 +1,5 @@
 # Weighted a star
-While coding weighted a star, path finder algorithm I have learned python OOP.
+While coding weighted a star, path finder algorithm I have learned python OOP. I also make binary tree for better performance. 
 
 
 This aStar take as input size, difficulty (from 0 to 100), e (from 0 to 100) if e is small algorithm is taking longer but it returns better path in the opposite case algorithm is fast, but path isn't the best. 
