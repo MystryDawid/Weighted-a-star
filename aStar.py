@@ -1,11 +1,12 @@
 from random import random
 import math
 import time as _time
-
+from BinaryTree import TreeNode
 
 class Node:
     def __init__(self, parent=None, position=None):     # constructor of objects
         self.parent = parent
+
         self.position = position
 
         self.g = 0
@@ -40,24 +41,18 @@ def astar(size, difficulty, e):
     start_node = Node(None, (0, 0))
     end = Node(None, (grid - 1, grid - 1))
 
-    open_set = []
-    closed_set = []
     o = []
+    closed_set = TreeNode()
 
     # adding start node to open set and o
-    open_set.append(start_node)
+    open_set = TreeNode(start_node)
     o.append(start_node.position)
 
-    while open_set:
-        current_node = open_set[0]
-        current_index = 0
+    while open_set.value:
 
-        for index, item in enumerate(open_set):     # looking in open set for the closest node to the end
-            if item.f < current_node.f:
-                current_node = item
-                current_index = index
+        current_node = open_set.value_min_node()    # looking in open set for the closest node to the end
 
-        if current_node == end:     # if path is founded
+        if current_node.position == end.position:     # if path is founded
 
             path = [current_node.position]      # adding the start node position
 
@@ -69,12 +64,11 @@ def astar(size, difficulty, e):
             # returning revers path, maze and position of every node that was in open set and time
             return path[::-1], maze, o, time
 
-        open_set.pop(current_index)         # deleting closest node from open set
-        closed_set.append(current_node)     # and adding it to the close set
+        open_set.del_note(current_node)         # deleting closest node from open set
+        closed_set.add_node(current_node)     # and adding it to the close set
 
-        d = closed_set[-1].g    # calculating d (depth of search)
+        d = closed_set.value_min_node().g  # calculating d (depth of search)
         w = (0.4 + e - e * (d / n))     # calculating w (dynamic weight)
-
         # looking in neighbors for new nodes
         for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
 
@@ -91,25 +85,28 @@ def astar(size, difficulty, e):
 
             new_node = Node(current_node, position)  # creating a new node
 
-            if new_node in closed_set:  # checking if node is in closet_set, if is we skip one loop
+            # calculating h
+            new_node.h = math.sqrt((new_node.position[0] - end.position[0]) ** 2
+                                   + (new_node.position[1] - end.position[1]) ** 2)
+
+            if open_set.search(new_node):     # checking if node is in open_set, if is we skip one loop
                 continue
 
-            if new_node in open_set:    # checking if node is in open_set, if is we skip one loop
+            if closed_set.search(new_node):  # checking if node is in closet_set, if is we skip one loop
                 continue
 
             # calculating g
-            new_node.g = current_node.g + math.sqrt((new_node.position[0] - current_node.position[0])**2
-                                                    + (new_node.position[1] - current_node.position[1])**2)
-            # calculating h
-            new_node.h = math.sqrt((new_node.position[0] - end.position[0])**2
-                                   + (new_node.position[1] - end.position[1])**2)
-            # calculating f using dynamic weight
-            new_node.f = new_node.g + w*new_node.h
+            new_node.g = current_node.g + math.sqrt((new_node.position[0] - current_node.position[0]) ** 2
+                                                    + (new_node.position[1] - current_node.position[1]) ** 2)
 
-            open_set.append(new_node)       # adding new node to open_set
+            # calculating f using dynamic weight
+            new_node.f = new_node.g + w * new_node.h
+
+            open_set.add_node(new_node)       # adding new node to open_set
             o.append(new_node.position)     # adding new nodes position to o
 
     time = _time.time() - start_time    # stopping timer
     return False, maze, o, time  # if end wasn't found we return false, maze, o and time
 
 
+print(astar(100, 0, 100)[3])
