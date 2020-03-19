@@ -3,10 +3,10 @@ import math
 import time as _time
 from BinaryTree import TreeNode
 
+
 class Node:
     def __init__(self, parent=None, position=None):     # constructor of objects
         self.parent = parent
-
         self.position = position
 
         self.g = 0
@@ -108,5 +108,3 @@ def astar(size, difficulty, e):
     time = _time.time() - start_time    # stopping timer
     return False, maze, o, time  # if end wasn't found we return false, maze, o and time
 
-
-print(astar(100, 0, 100)[3])
