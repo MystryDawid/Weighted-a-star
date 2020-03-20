@@ -21,14 +21,13 @@ class Node:
     def __sub__(self, other):   # function for subtractions objects
         return self.position - other.position
 
-def min(dict):
-    tmp = 0
-    min = Node
+
+def smallest_f(dict):
+    min_f = list(dict.values())[0]  # getting first element
     for x in dict:
-        if tmp <= dict[x].f:
-            tmp = dict[x].f
-            min = dict[x]
-    return min
+        if min_f.f > dict[x].f:
+            min_f = dict[x]
+    return min_f    # retuning element with smallest f
 
 
 def astar(size, difficulty, e):
@@ -58,8 +57,7 @@ def astar(size, difficulty, e):
 
     while open_set:
 
-        current_node = min(open_set)  # looking in open set for the closest node to the end
-
+        current_node = smallest_f(open_set)  # getting node with smallest f
 
         if current_node.position == end.position:     # if path is founded
 
@@ -94,8 +92,7 @@ def astar(size, difficulty, e):
                 continue
 
             new_node = Node(current_node, position)  # creating a new node
-            new_node.id = new_node.position[0] + (new_node.position[1] ** 2) * 2
-
+            new_node.id = new_node.position[0] + (new_node.position[1] * grid)
 
             if new_node.id in closed_set:    # checking if node is in closet_set, if is we skip one loop
                 continue
@@ -119,3 +116,4 @@ def astar(size, difficulty, e):
 
     time = _time.time() - start_time    # stopping timer
     return False, maze, o, time  # if end wasn't found we return false, maze, o and time
+
