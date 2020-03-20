@@ -1,7 +1,7 @@
 from random import random
 import math
 import time as _time
-from BinaryTree import TreeNode
+
 
 
 class Node:
@@ -9,6 +9,7 @@ class Node:
 
         self.parent = parent
         self.position = position
+        self.id = 0
 
         self.g = 0
         self.h = 0
@@ -17,11 +18,17 @@ class Node:
     def __eq__(self, other):    # function for comparing objects
         return self.position == other.position
 
-    def __hash__(self):         # function for hashing objects
-        return hash(self.position)
-
     def __sub__(self, other):   # function for subtractions objects
         return self.position - other.position
+
+def min(dict):
+    tmp = 0
+    min = Node
+    for x in dict:
+        if tmp <= dict[x].f:
+            tmp = dict[x].f
+            min = dict[x]
+    return min
 
 
 def astar(size, difficulty, e):
@@ -43,12 +50,16 @@ def astar(size, difficulty, e):
     end = Node(None, (grid - 1, grid - 1))
 
     o = [start_node.position]
-    open_set = TreeNode(start_node)     # adding start node to open set and o
-    closed_set = TreeNode()      # creating closed set
 
-    while open_set.value:
+    open_set = {}   # adding start node to open set and o
+    closed_set = {}      # creating closed set
 
-        current_node = open_set.value_min_node()    # looking in open set for the closest node to the end
+    open_set[start_node.id] = start_node
+
+    while open_set:
+
+        current_node = min(open_set)  # looking in open set for the closest node to the end
+
 
         if current_node.position == end.position:     # if path is founded
 
@@ -62,11 +73,12 @@ def astar(size, difficulty, e):
             # returning revers path, maze and position of every node that was in open set and time
             return path[::-1], maze, o, time
 
-        open_set.del_note(current_node)         # deleting closest node from open set
-        closed_set.add_node(current_node)     # and adding it to the close set
+        del open_set[current_node.id]       # deleting closest node from open set
+        closed_set[current_node.id] = current_node    # and adding it to the close set
 
-        d = closed_set.value_min_node().g  # calculating d (depth of search)
+        d = current_node.g  # calculating d (depth of search)
         w = (0.4 + e - e * (d / n))     # calculating w (dynamic weight)
+
         # looking in neighbors for new nodes
         for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
 
@@ -82,16 +94,18 @@ def astar(size, difficulty, e):
                 continue
 
             new_node = Node(current_node, position)  # creating a new node
+            new_node.id = new_node.position[0] + (new_node.position[1] ** 2) * 2
+
+
+            if new_node.id in closed_set:    # checking if node is in closet_set, if is we skip one loop
+                continue
+
+            if new_node.id in open_set:      # checking if node is in open_set, if is we skip one loop
+                continue
 
             # calculating h
             new_node.h = math.sqrt((new_node.position[0] - end.position[0]) ** 2
                                    + (new_node.position[1] - end.position[1]) ** 2)
-
-            if open_set.search(new_node):     # checking if node is in open_set, if is we skip one loop
-                continue
-
-            if closed_set.search(new_node):  # checking if node is in closet_set, if is we skip one loop
-                continue
 
             # calculating g
             new_node.g = current_node.g + math.sqrt((new_node.position[0] - current_node.position[0]) ** 2
@@ -100,7 +114,7 @@ def astar(size, difficulty, e):
             # calculating f using dynamic weight
             new_node.f = new_node.g + w * new_node.h
 
-            open_set.add_node(new_node)       # adding new node to open_set
+            open_set[new_node.id] = new_node       # adding new node to open_set
             o.append(new_node.position)     # adding new nodes position to o
 
     time = _time.time() - start_time    # stopping timer
